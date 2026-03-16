@@ -1,0 +1,12 @@
+[build]
+  # No build command needed since it's just plain HTML/CSS
+  command = ""
+  # The directory to deploy is the current one
+  publish = "."
+
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Frame-Options = "DENY"
+    X-Content-Type-Options = "nosniff"
+    Referrer-Policy = "strict-origin-when-cross-origin"

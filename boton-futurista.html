@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Botón Futurista - Entrenamiento IA</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap');
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background-color: #030712; /* Fondo muy oscuro, estilo espacio profundo */
+            background-image: 
+                radial-gradient(circle at 30% 30%, rgba(0, 150, 255, 0.03) 0%, transparent 40%),
+                radial-gradient(circle at 70% 70%, rgba(255, 100, 0, 0.03) 0%, transparent 40%);
+            font-family: 'Inter', sans-serif;
+            overflow: hidden;
+        }
+
+        /* Contenedor principal para posicionar capas */
+        .button-wrapper {
+            position: relative;
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+            /* Espacio para que el glow no se corte */
+            padding: 20px;
+        }
+
+        /* --- Anillo de Energía Toroidal --- */
+        .energia-toroidal {
+            position: absolute;
+            inset: -4px; /* Sobresale un poco del botón original */
+            border-radius: 60px;
+            z-index: 0;
+            overflow: hidden;
+            filter: blur(8px);
+            opacity: 0.85;
+            transition: all 0.4s ease;
+            box-shadow: 0 0 20px rgba(0, 240, 255, 0.2);
+        }
+
+        .energia-toroidal::before,
+        .energia-toroidal::after {
+            content: '';
+            position: absolute;
+            inset: -100%; /* Suficientemente grande para rotar sin esquinas cortadas */
+            background: conic-gradient(
+                from 0deg,
+                transparent 0%,
+                #00f0ff 25%,
+                transparent 35%,
+                transparent 50%,
+                #ff5500 75%,
+                transparent 85%,
+                transparent 100%
+            );
+            animation: rotar 3s linear infinite;
+        }
+
+        .energia-toroidal::after {
+            background: conic-gradient(
+                from 180deg,
+                transparent 0%,
+                #ff5500 25%,
+                transparent 35%,
+                transparent 50%,
+                #00f0ff 75%,
+                transparent 85%,
+                transparent 100%
+            );
+            animation: rotar 5s linear infinite reverse;
+            opacity: 0.7;
+            mix-blend-mode: screen;
+        }
+
+        /* Máscara central para que la energía sea solo un borde (anillo) */
+        .energia-mask {
+            position: absolute;
+            inset: 2px;
+            background: #030712; /* Mismo color del body para ocultar el centro */
+            border-radius: 50px;
+            z-index: 1;
+        }
+
+        @keyframes rotar {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* --- Botón Principal --- */
+        .btn-futurista {
+            position: relative;
+            z-index: 2;
+            background: rgba(10, 15, 30, 0.5);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(0, 240, 255, 0.4);
+            border-radius: 50px;
+            padding: 18px 42px;
+            color: #ffffff;
+            font-size: 15px;
+            font-weight: 800;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            cursor: pointer;
+            box-shadow: 
+                inset 0px 0px 20px rgba(0, 240, 255, 0.1),
+                inset 0px -4px 10px rgba(255, 85, 0, 0.1);
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            overflow: hidden;
+            text-decoration: none;
+        }
+
+        /* Destello interior que pasa de lado a lado */
+        .btn-futurista::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -150%;
+            width: 50%;
+            height: 100%;
+            background: linear-gradient(
+                90deg, 
+                transparent, 
+                rgba(255, 255, 255, 0.3), 
+                transparent
+            );
+            transform: skewX(-25deg);
+            animation: destello 5s infinite;
+        }
+
+        @keyframes destello {
+            0% { left: -150%; }
+            15% { left: 200%; }
+            100% { left: 200%; }
+        }
+
+        /* --- Elementos Interiores --- */
+        .btn-texto {
+            position: relative;
+            z-index: 3;
+            background: linear-gradient(90deg, #ffffff, #e0f0ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 0 8px rgba(255, 255, 255, 0.15);
+            transition: all 0.3s ease;
+        }
+
+        /* Icono "IA / Spark" */
+        .btn-icono {
+            position: relative;
+            z-index: 3;
+            width: 20px;
+            height: 20px;
+            fill: #00f0ff;
+            filter: drop-shadow(0 0 5px rgba(0, 240, 255, 0.6));
+            transition: all 0.3s ease;
+        }
+
+        /* Pulso de atención para alta conversión */
+        @keyframes pulso {
+            0% { box-shadow: 0 0 0 0 rgba(0, 240, 255, 0.3); }
+            70% { box-shadow: 0 0 0 25px rgba(0, 240, 255, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(0, 240, 255, 0); }
+        }
+        
+        .pulse-effect {
+            position: absolute;
+            inset: 0;
+            border-radius: 50px;
+            animation: pulso 2.5s infinite cubic-bezier(0.66, 0, 0, 1);
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        /* --- Interacciones (Hover / Focus) --- */
+        .button-wrapper:hover .btn-futurista {
+            transform: scale(1.04) translateY(-2px);
+            border-color: rgba(255, 100, 0, 0.8);
+            background: rgba(15, 20, 40, 0.7);
+            box-shadow: 
+                inset 0px 0px 20px rgba(255, 100, 0, 0.2),
+                inset 0px -4px 10px rgba(0, 240, 255, 0.2);
+        }
+
+        .button-wrapper:hover .energia-toroidal {
+            inset: -8px;
+            filter: blur(12px);
+            opacity: 1;
+            box-shadow: 
+                0 0 30px rgba(0, 240, 255, 0.4),
+                0 0 30px rgba(255, 100, 0, 0.4);
+        }
+
+        .button-wrapper:hover .btn-texto {
+            background: linear-gradient(90deg, #ffffff, #ffddaa);
+            -webkit-background-clip: text;
+            text-shadow: 0 0 15px rgba(255, 150, 0, 0.6);
+        }
+
+        .button-wrapper:hover .btn-icono {
+            fill: #ff5500;
+            filter: drop-shadow(0 0 8px rgba(255, 85, 0, 0.8));
+            transform: rotate(180deg) scale(1.15);
+        }
+
+        .button-wrapper:active .btn-futurista {
+            transform: scale(0.98);
+        }
+
+    </style>
+</head>
+<body>
+
+    <div class="button-wrapper">
+        <!-- Anillo de energía toroidal -->
+        <div class="energia-toroidal"></div>
+        <!-- Máscara para hacer hueco el centro -->
+        <div class="energia-mask"></div>
+        
+        <!-- Botón en sí -->
+        <a href="#" class="btn-futurista">
+            <span class="pulse-effect"></span>
+            
+            <!-- Icono de chispa / IA -->
+            <svg class="btn-icono" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path d="M11.25 1.041a.75.75 0 0 1 1.5 0v5.52a.75.75 0 0 0 .54.72l5.52 1.5a.75.75 0 0 1 0 1.439l-5.52 1.5a.75.75 0 0 0-.54.72v5.52a.75.75 0 0 1-1.5 0v-5.52a.75.75 0 0 0-.54-.72l-5.52-1.5a.75.75 0 0 1 0-1.439l5.52-1.5a.75.75 0 0 0 .54-.72v-5.52Z" />
+                <path d="M21.25 15.041a.75.75 0 0 1 1.5 0v2.52a.75.75 0 0 0 .54.72l2.52 1.5a.75.75 0 0 1 0 1.439l-2.52 1.5a.75.75 0 0 0-.54.72v2.52a.75.75 0 0 1-1.5 0v-2.52a.75.75 0 0 0-.54-.72l-2.52-1.5a.75.75 0 0 1 0-1.439l2.52-1.5a.75.75 0 0 0 .54-.72v-2.52Z" opacity="0.6"/>
+                <path d="M4.25 2.041a.75.75 0 0 1 1.5 0v1.52a.75.75 0 0 0 .54.72l1.52 1.5a.75.75 0 0 1 0 1.439l-1.52 1.5a.75.75 0 0 0-.54.72v1.52a.75.75 0 0 1-1.5 0v-1.52a.75.75 0 0 0-.54-.72l-1.52-1.5a.75.75 0 0 1 0-1.439l1.52-1.5a.75.75 0 0 0 .54-.72v-1.52Z" opacity="0.4"/>
+            </svg>
+            
+            <span class="btn-texto">Quiero iniciar mi entrenamiento</span>
+        </a>
+    </div>
+
+</body>
+</html>
