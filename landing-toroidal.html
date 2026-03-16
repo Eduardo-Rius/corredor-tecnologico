@@ -1,0 +1,645 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Proyecto Toroidal - El futuro del emprendimiento</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800;900&display=swap');
+
+        :root {
+            --bg-dark: #030712;
+            --blue-glow: #00f0ff;
+            --orange-glow: #ff5500;
+            --text-main: #ffffff;
+            --text-secondary: #9ca3af;
+            --glass-bg: rgba(10, 15, 30, 0.4);
+            --glass-border: rgba(0, 240, 255, 0.15);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            font-family: 'Inter', sans-serif;
+            line-height: 1.6;
+            overflow-x: hidden;
+            /* Background glow effects */
+            background-image: 
+                radial-gradient(circle at 10% 20%, rgba(0, 240, 255, 0.05) 0%, transparent 40%),
+                radial-gradient(circle at 90% 80%, rgba(255, 85, 0, 0.05) 0%, transparent 40%),
+                radial-gradient(circle at 50% 50%, rgba(0, 240, 255, 0.02) 0%, transparent 60%);
+            background-attachment: fixed;
+        }
+
+        /* Typography */
+        h1, h2, h3 {
+            line-height: 1.2;
+            margin-bottom: 20px;
+        }
+
+        .gradient-text-blue {
+            background: linear-gradient(90deg, #ffffff, var(--blue-glow));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .gradient-text-orange {
+            background: linear-gradient(90deg, #ffddaa, var(--orange-glow));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .eyebrow {
+            display: inline-block;
+            padding: 6px 16px;
+            background: rgba(0, 240, 255, 0.1);
+            border: 1px solid rgba(0, 240, 255, 0.3);
+            border-radius: 50px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: var(--blue-glow);
+            margin-bottom: 24px;
+            box-shadow: 0 0 15px rgba(0, 240, 255, 0.1);
+        }
+
+        p {
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+            margin-bottom: 16px;
+        }
+
+        strong {
+            color: var(--text-main);
+            font-weight: 600;
+        }
+
+        /* Layout Container */
+        .container {
+            width: 100%;
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 0 24px;
+        }
+
+        section {
+            padding: 100px 0;
+            position: relative;
+        }
+
+        /* Glassmorphism Cards */
+        .glass-card {
+            background: var(--glass-bg);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid var(--glass-border);
+            border-radius: 24px;
+            padding: 40px;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .glass-card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+        }
+
+        .glass-card:hover {
+            transform: translateY(-5px);
+            border-color: rgba(0, 240, 255, 0.3);
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5), 0 0 20px rgba(0, 240, 255, 0.1);
+        }
+
+        /* --- Hero Section --- */
+        .hero {
+            text-align: center;
+            padding: 120px 0 60px;
+        }
+
+        .hero h1 {
+            font-size: clamp(2.5rem, 5vw, 4.5rem);
+            font-weight: 900;
+            margin-bottom: 30px;
+            letter-spacing: -1px;
+        }
+
+        .hero p.lead {
+            font-size: clamp(1.1rem, 2vw, 1.4rem);
+            max-width: 800px;
+            margin: 0 auto 40px;
+            color: #d1d5db;
+        }
+
+        /* --- Grid Layouts --- */
+        .grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+            align-items: center;
+        }
+
+        .grid-cards {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 30px;
+        }
+
+        /* Responsive behavior */
+        @media (max-width: 992px) {
+            .grid-cards { grid-template-columns: repeat(2, 1fr); }
+        }
+        @media (max-width: 768px) {
+            .grid-cards { grid-template-columns: 1fr; }
+        }
+
+        /* --- List Elements --- */
+        ul.icon-list {
+            list-style: none;
+            padding: 0;
+            margin: 30px 0;
+        }
+
+        ul.icon-list li {
+            display: flex;
+            align-items: center;
+            font-size: 1.2rem;
+            color: var(--text-main);
+            margin-bottom: 20px;
+            background: rgba(255,255,255,0.03);
+            padding: 16px 24px;
+            border-radius: 16px;
+            border: 1px solid rgba(255,255,255,0.05);
+            transition: all 0.3s ease;
+        }
+
+        ul.icon-list li:hover {
+            background: rgba(0, 240, 255, 0.05);
+            border-color: rgba(0, 240, 255, 0.2);
+            transform: translateX(10px);
+        }
+
+        ul.icon-list li span.icon {
+            font-size: 1.5rem;
+            margin-right: 16px;
+            filter: drop-shadow(0 0 5px rgba(255,255,255,0.3));
+        }
+
+        /* --- Step Items --- */
+        .step-item {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 40px;
+            position: relative;
+        }
+
+        .step-number {
+            flex-shrink: 0;
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, var(--blue-glow), var(--orange-glow));
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-weight: 800;
+            font-size: 1.2rem;
+            color: var(--bg-dark);
+            box-shadow: 0 0 20px rgba(0, 240, 255, 0.4);
+            position: relative;
+            z-index: 2;
+        }
+
+        .step-content h3 {
+            font-size: 1.4rem;
+            margin-bottom: 10px;
+            color: var(--text-main);
+        }
+
+        /* --- Floating UI elements for decoration --- */
+        .floating-element {
+            position: absolute;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(0,240,255,0.1) 0%, transparent 70%);
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        /* --- Botón Futurista Styles (Integrated) --- */
+        .cta-container {
+            display: flex;
+            justify-content: center;
+            margin-top: 60px;
+            padding: 20px;
+        }
+
+        .button-wrapper {
+            position: relative;
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .energia-toroidal {
+            position: absolute;
+            inset: -4px;
+            border-radius: 60px;
+            z-index: 0;
+            overflow: hidden;
+            filter: blur(8px);
+            opacity: 0.85;
+            transition: all 0.4s ease;
+            box-shadow: 0 0 20px rgba(0, 240, 255, 0.2);
+        }
+
+        .energia-toroidal::before,
+        .energia-toroidal::after {
+            content: '';
+            position: absolute;
+            inset: -100%;
+            background: conic-gradient(from 0deg, transparent 0%, #00f0ff 25%, transparent 35%, transparent 50%, #ff5500 75%, transparent 85%, transparent 100%);
+            animation: rotar 3s linear infinite;
+        }
+
+        .energia-toroidal::after {
+            background: conic-gradient(from 180deg, transparent 0%, #ff5500 25%, transparent 35%, transparent 50%, #00f0ff 75%, transparent 85%, transparent 100%);
+            animation: rotar 5s linear infinite reverse;
+            opacity: 0.7;
+            mix-blend-mode: screen;
+        }
+
+        .energia-mask {
+            position: absolute;
+            inset: 2px;
+            background: var(--bg-dark);
+            border-radius: 50px;
+            z-index: 1;
+        }
+
+        @keyframes rotar { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+        .btn-futurista {
+            position: relative;
+            z-index: 2;
+            background: rgba(10, 15, 30, 0.5);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(0, 240, 255, 0.4);
+            border-radius: 50px;
+            padding: 20px 48px;
+            color: #ffffff;
+            font-size: 16px;
+            font-weight: 800;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            cursor: pointer;
+            box-shadow: inset 0px 0px 20px rgba(0, 240, 255, 0.1), inset 0px -4px 10px rgba(255, 85, 0, 0.1);
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            overflow: hidden;
+            text-decoration: none;
+        }
+
+        .btn-futurista::after {
+            content: '';
+            position: absolute;
+            top: 0; left: -150%;
+            width: 50%; height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            transform: skewX(-25deg);
+            animation: destello 5s infinite;
+        }
+
+        @keyframes destello { 0% { left: -150%; } 15% { left: 200%; } 100% { left: 200%; } }
+
+        .btn-texto {
+            position: relative;
+            z-index: 3;
+            background: linear-gradient(90deg, #ffffff, #e0f0ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 0 8px rgba(255, 255, 255, 0.15);
+            transition: all 0.3s ease;
+        }
+
+        .btn-icono {
+            position: relative;
+            z-index: 3;
+            width: 22px;
+            height: 22px;
+            fill: #00f0ff;
+            filter: drop-shadow(0 0 5px rgba(0, 240, 255, 0.6));
+            transition: all 0.3s ease;
+        }
+
+        @keyframes pulso {
+            0% { box-shadow: 0 0 0 0 rgba(0, 240, 255, 0.3); }
+            70% { box-shadow: 0 0 0 30px rgba(0, 240, 255, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(0, 240, 255, 0); }
+        }
+        
+        .pulse-effect {
+            position: absolute;
+            inset: 0;
+            border-radius: 50px;
+            animation: pulso 2.5s infinite cubic-bezier(0.66, 0, 0, 1);
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .button-wrapper:hover .btn-futurista {
+            transform: scale(1.04) translateY(-2px);
+            border-color: rgba(255, 100, 0, 0.8);
+            background: rgba(15, 20, 40, 0.7);
+            box-shadow: inset 0px 0px 20px rgba(255, 100, 0, 0.2), inset 0px -4px 10px rgba(0, 240, 255, 0.2);
+        }
+
+        .button-wrapper:hover .energia-toroidal {
+            inset: -8px;
+            filter: blur(12px);
+            opacity: 1;
+            box-shadow: 0 0 30px rgba(0, 240, 255, 0.4), 0 0 30px rgba(255, 100, 0, 0.4);
+        }
+
+        .button-wrapper:hover .btn-texto {
+            background: linear-gradient(90deg, #ffffff, #ffddaa);
+            -webkit-background-clip: text;
+            text-shadow: 0 0 15px rgba(255, 150, 0, 0.6);
+        }
+
+        .button-wrapper:hover .btn-icono {
+            fill: #ff5500;
+            filter: drop-shadow(0 0 8px rgba(255, 85, 0, 0.8));
+            transform: rotate(180deg) scale(1.15);
+        }
+
+        /* --- Animations --- */
+        .fade-in-up {
+            animation: fadeInUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+            opacity: 0;
+            transform: translateY(30px);
+        }
+
+        .delay-1 { animation-delay: 0.1s; }
+        .delay-2 { animation-delay: 0.2s; }
+        .delay-3 { animation-delay: 0.3s; }
+        .delay-4 { animation-delay: 0.4s; }
+
+        @keyframes fadeInUp {
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* --- Responsive --- */
+        @media (max-width: 768px) {
+            .grid-2 { grid-template-columns: 1fr; }
+            section { padding: 60px 0; }
+            .hero { padding-top: 80px; }
+            .glass-card { padding: 30px 20px; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Floating Background Decor -->
+    <div class="floating-element" style="top: 10%; left: -100px;"></div>
+    <div class="floating-element" style="top: 40%; right: -150px; background: radial-gradient(circle, rgba(255,85,0,0.08) 0%, transparent 70%);"></div>
+
+    <div class="container">
+        
+        <!-- HEADER / HERO -->
+        <section class="hero">
+            <div class="fade-in-up">
+                <span class="eyebrow">Después de los 3 videos</span>
+            </div>
+            <h1 class="fade-in-up delay-1">¿Listo para entrar al <br><span class="gradient-text-blue">futuro del emprendimiento?</span></h1>
+            <p class="lead fade-in-up delay-2">Si alguna vez sentiste que el sistema está hecho para que solo unos pocos ganen... <strong>no estás loco.</strong></p>
+            
+            <div class="glass-card fade-in-up delay-3" style="max-width: 800px; margin: 0 auto; text-align: left;">
+                <p>La mayoría intenta emprender solo, sin tecnología, sin capital y sin una red real de apoyo.</p>
+                <h3 class="gradient-text-orange" style="margin-top: 20px;">Por eso nació Proyecto Toroidal.</h3>
+                <p>Un ecosistema científico y tecnológico donde la inteligencia artificial, la cooperación y la innovación trabajan juntos para crear riqueza real.</p>
+                <div style="margin-top: 24px; padding: 20px; background: rgba(0, 240, 255, 0.05); border-left: 4px solid var(--blue-glow); border-radius: 0 8px 8px 0;">
+                    <p style="margin:0; color: #fff;">Aquí no vienes a vender productos.<br><strong>Vienes a construir empresas inteligentes dentro de una red que crece contigo.</strong></p>
+                </div>
+            </div>
+        </section>
+
+        <!-- PUNTO DE PARTIDA & EN QUIÉN TE CONVIERTES -->
+        <section>
+            <div class="grid-2">
+                <!-- Tu punto de partida -->
+                <div class="glass-card fade-in-up">
+                    <h2 class="gradient-text-blue">Tu punto de partida</h2>
+                    <p>Llegas como muchos de nosotros:</p>
+                    <ul style="list-style-type: none; padding-left: 10px; margin-top: 15px;">
+                        <li style="margin-bottom: 10px; position: relative; padding-left: 20px;">
+                            <span style="position: absolute; left: 0; color: var(--blue-glow);">•</span> Con hambre de crecer.
+                        </li>
+                        <li style="margin-bottom: 10px; position: relative; padding-left: 20px;">
+                            <span style="position: absolute; left: 0; color: var(--blue-glow);">•</span> Con la sensación de que debe existir una forma más inteligente de emprender.
+                        </li>
+                        <li style="margin-bottom: 10px; position: relative; padding-left: 20px;">
+                            <span style="position: absolute; left: 0; color: var(--blue-glow);">•</span> Con la intuición de que la tecnología va a cambiarlo todo.
+                        </li>
+                    </ul>
+                    <p style="margin-top: 20px; font-weight: 600; font-size: 1.2rem; color: #fff;">Y tienes razón.</p>
+                </div>
+
+                <!-- En quién te conviertes -->
+                <div class="glass-card fade-in-up delay-1" style="border-color: rgba(255, 85, 0, 0.3);">
+                    <h2 class="gradient-text-orange">En quién te conviertes</h2>
+                    <p>Después de este proceso, no serás la misma persona. Te convertirás en:</p>
+                    
+                    <ul class="icon-list">
+                        <li><span class="icon">🚀</span> Un líder de alto impacto</li>
+                        <li><span class="icon">🤖</span> Un emprendedor que domina la IA</li>
+                        <li><span class="icon">🌎</span> Parte cooperativa de riqueza colectiva</li>
+                    </ul>
+                    <p><strong>No estarás solo.</strong><br>Estarás dentro de una red diseñada para que todos crezcan.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- EL ENTRENAMIENTO DE 90 DÍAS -->
+        <section>
+            <div style="text-align: center; margin-bottom: 60px;">
+                <h2 style="font-size: 2.5rem;" class="fade-in-up">El entrenamiento de <span class="gradient-text-blue">90 días</span></h2>
+                <p class="fade-in-up delay-1">Simplificamos lo que las universidades no enseñan.</p>
+            </div>
+
+            <div class="grid-cards">
+                
+                <div class="glass-card fade-in-up delay-1">
+                    <div class="step-number" style="margin-bottom: 20px;">1</div>
+                    <h3>Dominio de Inteligencia Artificial</h3>
+                    <p>Aprenderás a usar IA para crear empresas automatizadas, no solo para hacer preguntas en un chat.</p>
+                    <p style="color: #fff; font-size: 0.95rem;">Construirás tu primer emprendimiento tecnológico desde cero.</p>
+                </div>
+
+                <div class="glass-card fade-in-up delay-2">
+                    <div class="step-number" style="margin-bottom: 20px;">2</div>
+                    <h3>Reprogramación mental</h3>
+                    <p>Entrenarás tu mente para pensar como los creadores de riqueza.</p>
+                    <p style="color: #fff; font-size: 0.95rem;">Pasarás de la mentalidad de escasez a una de abundancia colaborativa.</p>
+                </div>
+
+                <div class="glass-card fade-in-up delay-3">
+                    <div class="step-number" style="margin-bottom: 20px;">3</div>
+                    <h3>Liderazgo de Alto Impacto</h3>
+                    <p>Aprenderás a crear equipos, liderar comunidades y multiplicar resultados.</p>
+                </div>
+
+                <div class="glass-card fade-in-up delay-4">
+                    <div class="step-number" style="margin-bottom: 20px;">4</div>
+                    <h3 style="font-size: 1.3rem;">Ecosistema científico y tecnológico</h3>
+                    <p>Acceso a mentores y expertos que fortalecen tu proyecto y tu crecimiento.</p>
+                </div>
+
+                <div class="glass-card fade-in-up delay-4" style="grid-column: span 1; display: flex; flex-direction: column; justify-content: center; border-color: rgba(0, 240, 255, 0.4); background: linear-gradient(135deg, var(--glass-bg), rgba(0, 240, 255, 0.08)); padding: 40px;">
+                    <div class="step-number" style="margin-bottom: 20px;">5</div>
+                    <h3 style="margin-bottom: 10px; font-size: 1.5rem;" class="gradient-text-blue">Cooperativismo moderno</h3>
+                    <p style="margin: 0; color: #fff; font-weight: 600; font-size: 1.1rem;">Aquí ocurre la magia.</p>
+                    <p style="margin-top: 15px; font-size: 0.95rem;">En lugar de competir contra todos… crecemos juntos.</p>
+                    <p style="margin-top: 5px; font-size: 0.95rem; color: var(--blue-glow); font-weight: 600;">Tu éxito fortalece la red.<br>La red fortalece tu éxito.</p>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- EL MOTOR DEL PROYECTO -->
+        <section>
+            <div class="grid-2">
+                <div class="fade-in-up">
+                    <h2 class="gradient-text-orange">El motor del Proyecto Toroidal</h2>
+                    <p class="lead" style="color: #fff; margin-bottom: 20px;">Una de las mayores barreras para emprender es el capital. Aquí lo resolvemos.</p>
+                </div>
+                <div class="glass-card fade-in-up delay-1">
+                    <ul class="icon-list" style="margin: 0;">
+                        <li><span class="icon">💰</span> Financiamiento inicial para campañas y arranque.</li>
+                        <li><span class="icon">🚀</span> Fondo de emprendimiento de hasta $300,000 MXN para escalar tu proyecto.</li>
+                        <li><span class="icon">🎓</span> Entrenamientos presenciales intensivos con líderes en tecnología, finanzas y desarrollo humano.</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- UN NUEVO MODELO ECONOMICO -->
+        <section style="text-align: center;">
+            <div class="fade-in-up">
+                <h2 style="font-size: 2.5rem; margin-bottom: 40px;">Un <span class="gradient-text-blue">nuevo modelo</span> económico</h2>
+            </div>
+            
+            <div class="grid-2" style="max-width: 900px; margin: 0 auto;">
+                <div class="glass-card fade-in-up delay-1" style="border-color: rgba(255, 255, 255, 0.1); opacity: 0.8;">
+                    <p style="color: var(--text-secondary); text-transform: uppercase; font-size: 0.85rem; letter-spacing: 1px; margin-bottom: 10px;">El viejo sistema dice:</p>
+                    <h3 style="font-size: 1.8rem; color: #fff;">“Compite contra todos.”</h3>
+                </div>
+                
+                <div class="glass-card fade-in-up delay-2" style="border-color: rgba(0, 240, 255, 0.4); background: linear-gradient(135deg, var(--glass-bg), rgba(0, 240, 255, 0.05)); transform: scale(1.05);">
+                    <p style="color: var(--blue-glow); text-transform: uppercase; font-size: 0.85rem; letter-spacing: 1px; margin-bottom: 10px; font-weight: 600;">El Proyecto Toroidal dice:</p>
+                    <h3 style="font-size: 1.8rem; color: #fff;" class="gradient-text-blue">“Colabora y multiplica.”</h3>
+                </div>
+            </div>
+            
+            <div class="fade-in-up delay-3" style="margin-top: 50px;">
+                <p style="font-size: 1.3rem; color: #fff;">Cuando uno crece, todos avanzan.</p>
+                <p style="font-size: 1.3rem; color: #fff;">Y cuando la red crece… <strong class="gradient-text-orange" style="font-size: 1.5rem; display: block; margin-top: 10px;">tu libertad financiera se vuelve inevitable.</strong></p>
+            </div>
+        </section>
+
+        <!-- TU MISION: LOS PROXIMOS 90 DIAS -->
+        <section>
+            <div class="glass-card fade-in-up" style="max-width: 800px; margin: 0 auto; border-color: rgba(255, 85, 0, 0.3); background: linear-gradient(135deg, var(--glass-bg), rgba(255, 85, 0, 0.05));">
+                <h2 style="text-align: center; margin-bottom: 20px;" class="gradient-text-orange">Tu misión: los próximos 90 días</h2>
+                <p style="text-align: center; color: #fff; font-size: 1.15rem; margin-bottom: 30px;">
+                    Estamos buscando solo a <strong>10 nuevos Guardianes</strong> que quieran formar parte de esta generación de líderes.
+                </p>
+                
+                <p style="text-align: center; color: var(--text-secondary); margin-bottom: 20px;">No necesitas ser experto en tecnología. Solo necesitas:</p>
+                
+                <div style="display: flex; flex-direction: column; gap: 15px; max-width: 400px; margin: 0 auto;">
+                    <div style="display: flex; align-items: center; gap: 15px; background: rgba(0,0,0,0.5); padding: 15px 20px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.05);">
+                        <span style="color: var(--orange-glow); font-size: 1.2rem;">✔</span>
+                        <span style="color: #fff; font-weight: 600;">Hambre de crecimiento</span>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 15px; background: rgba(0,0,0,0.5); padding: 15px 20px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.05);">
+                        <span style="color: var(--orange-glow); font-size: 1.2rem;">✔</span>
+                        <span style="color: #fff; font-weight: 600;">Mentalidad abierta</span>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 15px; background: rgba(0,0,0,0.5); padding: 15px 20px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.05);">
+                        <span style="color: var(--orange-glow); font-size: 1.2rem;">✔</span>
+                        <span style="color: #fff; font-weight: 600;">Ganas de construir algo grande</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- CTA SECTION CON BOTON FUTURISTA -->
+        <section style="text-align: center; padding-bottom: 60px;">
+            <div class="fade-in-up">
+                <h2 style="font-size: 2.2rem; margin-bottom: 20px;">La pregunta es simple</h2>
+                <p style="font-size: 1.2rem; color: #fff;">¿Quieres seguir jugando el juego del sistema…</p>
+                <p style="font-size: 1.5rem; font-weight: 800; margin-top: 10px;" class="gradient-text-blue">o quieres ayudar a crear el nuevo?</p>
+            </div>
+            
+            <div style="margin-top: 50px;" class="fade-in-up delay-1">
+                <p style="color: var(--orange-glow); font-weight: 800; text-transform: uppercase; letter-spacing: 2px;">👇 Tu siguiente paso</p>
+                <p style="color: #fff; margin-bottom: 0;">Reserva tu lugar ahora y comienza tu entrenamiento.</p>
+            </div>
+
+            <div class="cta-container fade-in-up delay-2">
+                
+                <!-- INICIO BOTON FUTURISTA -->
+                <div class="button-wrapper">
+                    <div class="energia-toroidal"></div>
+                    <div class="energia-mask"></div>
+                    
+                    <a href="#" class="btn-futurista">
+                        <span class="pulse-effect"></span>
+                        
+                        <!-- Icono de chispa / IA -->
+                        <svg class="btn-icono" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M11.25 1.041a.75.75 0 0 1 1.5 0v5.52a.75.75 0 0 0 .54.72l5.52 1.5a.75.75 0 0 1 0 1.439l-5.52 1.5a.75.75 0 0 0-.54.72v5.52a.75.75 0 0 1-1.5 0v-5.52a.75.75 0 0 0-.54-.72l-5.52-1.5a.75.75 0 0 1 0-1.439l5.52-1.5a.75.75 0 0 0 .54-.72v-5.52Z" />
+                            <path d="M21.25 15.041a.75.75 0 0 1 1.5 0v2.52a.75.75 0 0 0 .54.72l2.52 1.5a.75.75 0 0 1 0 1.439l-2.52 1.5a.75.75 0 0 0-.54.72v2.52a.75.75 0 0 1-1.5 0v-2.52a.75.75 0 0 0-.54-.72l-2.52-1.5a.75.75 0 0 1 0-1.439l2.52-1.5a.75.75 0 0 0 .54-.72v-2.52Z" opacity="0.6"/>
+                            <path d="M4.25 2.041a.75.75 0 0 1 1.5 0v1.52a.75.75 0 0 0 .54.72l1.52 1.5a.75.75 0 0 1 0 1.439l-1.52 1.5a.75.75 0 0 0-.54.72v1.52a.75.75 0 0 1-1.5 0v-1.52a.75.75 0 0 0-.54-.72l-1.52-1.5a.75.75 0 0 1 0-1.439l1.52-1.5a.75.75 0 0 0 .54-.72v-1.52Z" opacity="0.4"/>
+                        </svg>
+                        
+                        <span class="btn-texto">Quiero iniciar mi entrenamiento</span>
+                    </a>
+                </div>
+                <!-- FIN BOTON FUTURISTA -->
+                
+            </div>
+            <p style="margin-top: 20px; color: var(--text-secondary); font-size: 0.9rem;" class="fade-in-up delay-3">
+                Espacios limitados. Únete a la red que está cambiando las reglas del juego.
+            </p>
+        </section>
+
+        <!-- FOOTER -->
+        <footer style="text-align: center; padding: 40px 0; border-top: 1px solid rgba(255,255,255,0.05); margin-top: 40px;">
+            <div class="fade-in-up">
+                <p style="color: #fff; font-weight: 800; font-size: 1.2rem; margin-bottom: 5px;">Antonio García</p>
+                <p style="color: var(--text-secondary); margin-bottom: 0; font-size: 0.9rem;">Director del Programa</p>
+                <p style="color: var(--blue-glow); font-weight: 600; letter-spacing: 1px; text-transform: uppercase; font-size: 0.8rem; margin-top: 5px;">Corredor Científico y Tecnológico</p>
+            </div>
+        </footer>
+
+    </div>
+
+</body>
+</html>
