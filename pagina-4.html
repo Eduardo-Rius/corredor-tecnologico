@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Código de Expansión 90 - El Motor del Toroide</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800;900&display=swap');
+
+        :root {
+            --bg-dark: #030712;
+            --blue-glow: #00f0ff;
+            --orange-glow: #ff5500;
+            --text-main: #ffffff;
+            --text-secondary: #9ca3af;
+            --glass-bg: rgba(10, 15, 30, 0.4);
+            --glass-border: rgba(0, 240, 255, 0.15);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            font-family: 'Inter', sans-serif;
+            line-height: 1.6;
+            overflow-x: hidden;
+            background-image: 
+                radial-gradient(circle at 10% 20%, rgba(0, 240, 255, 0.05) 0%, transparent 40%),
+                radial-gradient(circle at 90% 80%, rgba(255, 85, 0, 0.05) 0%, transparent 40%),
+                radial-gradient(circle at 50% 50%, rgba(0, 240, 255, 0.03) 0%, transparent 60%);
+            background-attachment: fixed;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        /* Typography */
+        h1, h2, h3 {
+            line-height: 1.2;
+            margin-bottom: 20px;
+        }
+
+        .gradient-text-blue {
+            background: linear-gradient(90deg, #ffffff, var(--blue-glow));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .gradient-text-orange {
+            background: linear-gradient(90deg, #ffddaa, var(--orange-glow));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        /* Layout */
+        .container {
+            width: 100%;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 0 24px;
+            flex: 1;
+        }
+
+        header {
+            text-align: center;
+            padding: 60px 0 30px;
+        }
+
+        header h1 {
+            font-size: clamp(2.2rem, 5vw, 3.8rem);
+            font-weight: 900;
+            letter-spacing: -1px;
+            margin-bottom: 10px;
+        }
+
+        header p {
+            font-size: 1.1rem;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        /* Glass Card */
+        .glass-card {
+            background: var(--glass-bg);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid var(--glass-border);
+            border-radius: 24px;
+            padding: 40px;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+            margin-bottom: 50px;
+            transition: all 0.5s ease;
+        }
+
+        .glass-card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(255, 85, 0, 0.5), transparent);
+        }
+
+        .intro-text-box {
+            font-size: 1.2rem;
+            line-height: 1.7;
+            color: #fff;
+            text-shadow: 0 0 10px rgba(0,0,0,0.5);
+        }
+
+        .intro-text-box strong {
+            color: var(--blue-glow);
+            font-weight: 600;
+        }
+
+        .highlight-accent {
+            color: var(--orange-glow);
+            font-weight: 800;
+        }
+
+        /* Video Wrapper */
+        .video-wrapper {
+            position: relative;
+            width: 100%;
+            padding-bottom: 56.25%; /* 16:9 Aspect Ratio */
+            border-radius: 16px;
+            overflow: hidden;
+            background: #050a15;
+            box-shadow: 0 0 30px rgba(0, 240, 255, 0.1);
+            border: 1px solid rgba(255,255,255,0.05);
+            margin-bottom: 10px;
+        }
+
+        .video-wrapper iframe, .video-wrapper #player-4 {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+
+        /* Estilos Reutilizados para el botón futurista */
+        .cta-container {
+            display: none; /* hidden until video finishes */
+            justify-content: center;
+            margin: 10px 0 60px;
+            padding: 20px;
+        }
+
+        .button-wrapper {
+            position: relative;
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .energia-toroidal {
+            position: absolute;
+            inset: -4px;
+            border-radius: 60px;
+            z-index: 0;
+            overflow: hidden;
+            filter: blur(8px);
+            opacity: 0.85;
+            transition: all 0.4s ease;
+            box-shadow: 0 0 20px rgba(0, 240, 255, 0.2);
+        }
+
+        .energia-toroidal::before,
+        .energia-toroidal::after {
+            content: '';
+            position: absolute;
+            inset: -100%;
+            background: conic-gradient(from 0deg, transparent 0%, #00f0ff 25%, transparent 35%, transparent 50%, #ff5500 75%, transparent 85%, transparent 100%);
+            animation: rotar 3s linear infinite;
+        }
+
+        .energia-toroidal::after {
+            background: conic-gradient(from 180deg, transparent 0%, #ff5500 25%, transparent 35%, transparent 50%, #00f0ff 75%, transparent 85%, transparent 100%);
+            animation: rotar 5s linear infinite reverse;
+            opacity: 0.7;
+            mix-blend-mode: screen;
+        }
+
+        .energia-mask {
+            position: absolute;
+            inset: 2px;
+            background: var(--bg-dark);
+            border-radius: 50px;
+            z-index: 1;
+        }
+
+        @keyframes rotar { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+        .btn-futurista {
+            position: relative;
+            z-index: 2;
+            background: rgba(10, 15, 30, 0.5);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(0, 240, 255, 0.4);
+            border-radius: 50px;
+            padding: 22px 60px;
+            color: #ffffff;
+            font-size: 18px;
+            font-weight: 800;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            cursor: pointer;
+            box-shadow: inset 0px 0px 20px rgba(0, 240, 255, 0.1), inset 0px -4px 10px rgba(255, 85, 0, 0.1);
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            text-decoration: none;
+        }
+
+        .btn-futurista::after {
+            content: '';
+            position: absolute;
+            top: 0; left: -150%;
+            width: 50%; height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            transform: skewX(-25deg);
+            animation: destello 5s infinite;
+        }
+
+        @keyframes destello { 0% { left: -150%; } 15% { left: 200%; } 100% { left: 200%; } }
+
+        .btn-texto {
+            position: relative;
+            z-index: 3;
+            background: linear-gradient(90deg, #ffffff, #e0f0ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 0 8px rgba(255, 255, 255, 0.15);
+        }
+
+        .button-wrapper:hover .btn-futurista {
+            transform: scale(1.04) translateY(-2px);
+            border-color: rgba(255, 100, 0, 0.8);
+            background: rgba(15, 20, 40, 0.7);
+            box-shadow: inset 0px 0px 20px rgba(255, 100, 0, 0.2), inset 0px -4px 10px rgba(0, 240, 255, 0.2);
+        }
+
+        .button-wrapper:hover .energia-toroidal {
+            inset: -8px;
+            filter: blur(12px);
+            opacity: 1;
+            box-shadow: 0 0 30px rgba(0, 240, 255, 0.4), 0 0 30px rgba(255, 100, 0, 0.4);
+        }
+
+        /* Fallback / Manual Advance Btn */
+        .manual-advance-btn {
+            background: transparent;
+            border: none;
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+            cursor: pointer;
+            text-decoration: underline;
+            opacity: 0.6;
+            margin-top: 15px;
+            display: block;
+            text-align: right;
+            width: 100%;
+            transition: all 0.3s;
+        }
+        
+        .manual-advance-btn:hover {
+            color: var(--orange-glow);
+            opacity: 1;
+        }
+
+        /* Animations */
+        .fade-in-up {
+            animation: fadeInUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+            opacity: 0;
+            transform: translateY(30px);
+        }
+        .delay-1 { animation-delay: 0.2s; }
+        .delay-2 { animation-delay: 0.4s; }
+
+        @keyframes fadeInUp {
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Medias */
+        @media (max-width: 600px) {
+            .glass-card { padding: 30px 20px; }
+            .intro-text-box { font-size: 1rem; }
+        }
+    </style>
+    <script>
+        // STRICT PROGRESSION GUARD
+        if (localStorage.getItem('exp90_eval_passed') !== 'true') {
+            window.location.replace('pagina-3.html');
+        }
+    </script>
+</head>
+<body>
+
+    <div class="container">
+        <header class="fade-in-up">
+            <h1>El Motor del <span class="gradient-text-orange">Toroide</span></h1>
+            <p>Siguiente Nivel de Expansión</p>
+        </header>
+
+        <!-- Bloque de Texto Introductorio -->
+        <div class="glass-card fade-in-up delay-1" style="border-color: rgba(255, 85, 0, 0.3); background: linear-gradient(135deg, var(--glass-bg), rgba(255, 85, 0, 0.03));">
+            <p class="intro-text-box">
+                Este programa educativo de 90 días, titulado <span class="highlight-accent">"El motor del toroide"</span>, propone un sistema de aceleración de resultados diseñado para <strong>convertir el conocimiento técnico en flujos de ingresos mensuales constantes</strong>.<br><br>
+                A través de tres fases mensuales, el curso guía al estudiante desde la <strong>reprogramación mental y automatización con IA</strong> hasta la integración en una red de liderazgo cooperativo con contactos de alto nivel.<br><br>
+                El objetivo central es que el participante logre <strong>autofinanciar sus proyectos personales</strong> mediante la generación de capital propio, ofreciendo incluso la posibilidad de acceder a un fondo de emprendimiento especializado para propuestas destacadas. En última instancia, la iniciativa busca democratizar el éxito tecnológico al conectar el talento individual con la infraestructura financiera y científica necesaria para <strong>transformar el panorama social del país.</strong>
+            </p>
+        </div>
+
+        <!-- Contenedor del Video 4 -->
+        <div class="glass-card fade-in-up delay-2" style="padding-bottom: 25px;">
+            <div class="video-wrapper">
+                <div id="player-4"></div>
+            </div>
+            
+            <button class="manual-advance-btn" id="manual-btn-4" onclick="completeVideo()">He completado el video 4</button>
+            
+            <div id="status-indicator" style="display:none; text-align:right; margin-top:15px; color: #00f0ff; font-weight: 600; font-size:0.9rem;">
+                ✅ Video completado
+            </div>
+        </div>
+
+        <!-- Botón de Continuación (Oculto hasta terminar el video) -->
+        <div class="cta-container" id="final-btn-container">
+            <div class="button-wrapper">
+                <div class="energia-toroidal"></div>
+                <div class="energia-mask"></div>
+                <a href="pagina-5.html" class="btn-futurista">
+                    <span class="pulse-effect"></span>
+                    <span class="btn-texto">Estoy listo</span>
+                </a>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- YouTube API Logic -->
+    <script>
+        // Carga la API de iframe de YouTube de forma asíncrona
+        let tag = document.createElement('script');
+        tag.src = "https://www.youtube.com/iframe_api";
+        let firstScriptTag = document.getElementsByTagName('script')[0];
+        firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+
+        // Variables de estado
+        let player4;
+        let v4Done = localStorage.getItem('exp90_vid4') === 'true';
+
+        function onYouTubeIframeAPIReady() {
+            player4 = new YT.Player('player-4', {
+                videoId: 'GnJLmPkcfmI',
+                playerVars: { 
+                    'rel': 0, 
+                    'modestbranding': 1
+                },
+                events: { 
+                    'onStateChange': onPlayerStateChange 
+                }
+            });
+        }
+
+        function onPlayerStateChange(event) {
+            // Cuando el video llega a su fin
+            if (event.data === YT.PlayerState.ENDED && !v4Done) {
+                completeVideo();
+            }
+        }
+
+        function completeVideo() {
+            v4Done = true;
+            localStorage.setItem('exp90_vid4', 'true');
+            
+            // Actualizar interfaz
+            let btn = document.getElementById('manual-btn-4');
+            if(btn) btn.style.display = 'none';
+            
+            let status = document.getElementById('status-indicator');
+            if(status) status.style.display = 'block';
+
+            showFinalButton();
+        }
+
+        function showFinalButton() {
+            const btnContainer = document.getElementById('final-btn-container');
+            btnContainer.style.display = 'flex';
+            
+            // Efecto de scroll suave hacia el botón de poder
+            setTimeout(() => {
+                btnContainer.scrollIntoView({behavior: "smooth", block: "center"});
+            }, 500);
+        }
+
+        // Comprobación al cargar la página si el usuario ya vio el video anteriormente
+        window.addEventListener('DOMContentLoaded', () => {
+            if(v4Done) {
+                let btn = document.getElementById('manual-btn-4');
+                if(btn) btn.style.display = 'none';
+                
+                let status = document.getElementById('status-indicator');
+                if(status) status.style.display = 'block';
+
+                showFinalButton();
+            }
+        });
+    </script>
+</body>
+</html>

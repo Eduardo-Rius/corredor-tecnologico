@@ -1,0 +1,610 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Código de Expansión 90 - Evaluación</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800;900&display=swap');
+
+        :root {
+            --bg-dark: #030712;
+            --blue-glow: #00f0ff;
+            --orange-glow: #ff5500;
+            --text-main: #ffffff;
+            --text-secondary: #9ca3af;
+            --glass-bg: rgba(10, 15, 30, 0.4);
+            --glass-border: rgba(0, 240, 255, 0.15);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            font-family: 'Inter', sans-serif;
+            line-height: 1.6;
+            overflow-x: hidden;
+            background-image: 
+                radial-gradient(circle at 20% 10%, rgba(0, 240, 255, 0.05) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(255, 85, 0, 0.05) 0%, transparent 50%),
+                radial-gradient(circle at 50% 50%, rgba(0, 240, 255, 0.02) 0%, transparent 60%);
+            background-attachment: fixed;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        h1, h2, h3 { line-height: 1.2; margin-bottom: 20px; }
+
+        .gradient-text-blue {
+            background: linear-gradient(90deg, #ffffff, var(--blue-glow));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .gradient-text-orange {
+            background: linear-gradient(90deg, #ffddaa, var(--orange-glow));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 0 24px;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        header {
+            text-align: center;
+            padding: 60px 0 30px;
+        }
+
+        header h1 {
+            font-size: clamp(2rem, 5vw, 3.5rem);
+            font-weight: 900;
+            letter-spacing: -1px;
+            margin-bottom: 5px;
+        }
+
+        header p {
+            font-size: 1.1rem;
+            color: var(--blue-glow);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        /* Glass Card */
+        .glass-card {
+            background: var(--glass-bg);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid var(--glass-border);
+            border-radius: 24px;
+            padding: 40px;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+            margin-bottom: 60px;
+        }
+
+        .glass-card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(0, 240, 255, 0.5), transparent);
+        }
+
+        /* View States */
+        .view-state { display: none; animation: fadeIn 0.4s ease forwards; }
+        .view-state.active { display: block; }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Progress Bar */
+        .progress-container {
+            width: 100%;
+            height: 6px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            margin-bottom: 30px;
+            overflow: hidden;
+        }
+        .progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, var(--blue-glow), var(--orange-glow));
+            width: 0%;
+            transition: width 0.4s ease;
+        }
+        .progress-text {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            font-weight: 600;
+            margin-bottom: 10px;
+            text-align: right;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* Quiz Internal */
+        .question-text {
+            font-size: 1.4rem;
+            color: #fff;
+            margin-bottom: 30px;
+            line-height: 1.4;
+        }
+
+        .options-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-bottom: 30px;
+        }
+
+        .option-btn {
+            display: block;
+            width: 100%;
+            text-align: left;
+            padding: 18px 24px;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            color: #fff;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-family: inherit;
+        }
+
+        .option-btn:hover {
+            background: rgba(0, 240, 255, 0.05);
+            border-color: rgba(0, 240, 255, 0.3);
+            transform: translateX(5px);
+        }
+
+        .option-btn.selected {
+            background: rgba(0, 240, 255, 0.15);
+            border-color: var(--blue-glow);
+            box-shadow: 0 0 20px rgba(0, 240, 255, 0.2);
+            font-weight: 600;
+        }
+
+        /* Standard Buttons */
+        .btn-standard {
+            background: linear-gradient(135deg, rgba(0, 240, 255, 0.2), rgba(255, 85, 0, 0.2));
+            border: 1px solid rgba(0, 240, 255, 0.4);
+            color: #fff;
+            padding: 14px 30px;
+            border-radius: 50px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        .btn-standard:hover {
+            border-color: var(--orange-glow);
+            box-shadow: 0 0 20px rgba(255, 85, 0, 0.3);
+            transform: translateY(-2px);
+        }
+        .btn-standard:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            filter: grayscale(1);
+            transform: none;
+            box-shadow: none;
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 1px solid var(--text-secondary);
+            color: var(--text-secondary);
+            padding: 14px 30px;
+            border-radius: 50px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .btn-outline:hover {
+            border-color: #fff;
+            color: #fff;
+        }
+
+        /* Results Screen */
+        .score-circle {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            margin: 0 auto 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+            font-weight: 900;
+            border: 4px solid #333;
+            background: rgba(0,0,0,0.5);
+        }
+
+        .score-pass .score-circle {
+            border-color: var(--blue-glow);
+            box-shadow: 0 0 40px rgba(0, 240, 255, 0.3), inset 0 0 20px rgba(0, 240, 255, 0.2);
+            color: var(--blue-glow);
+        }
+
+        .score-fail .score-circle {
+            border-color: var(--orange-glow);
+            box-shadow: 0 0 40px rgba(255, 85, 0, 0.3), inset 0 0 20px rgba(255, 85, 0, 0.2);
+            color: var(--orange-glow);
+        }
+
+        /* --- Botón Futurista Styles (Reutilizado) --- */
+        .cta-container {
+            display: flex;
+            justify-content: center;
+            margin-top: 30px;
+            margin-bottom: 20px;
+        }
+
+        .button-wrapper {
+            position: relative;
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .energia-toroidal {
+            position: absolute;
+            inset: -4px;
+            border-radius: 60px;
+            z-index: 0;
+            overflow: hidden;
+            filter: blur(8px);
+            opacity: 0.85;
+            transition: all 0.4s ease;
+            box-shadow: 0 0 20px rgba(0, 240, 255, 0.2);
+        }
+
+        .energia-toroidal::before,
+        .energia-toroidal::after {
+            content: '';
+            position: absolute;
+            inset: -100%;
+            background: conic-gradient(from 0deg, transparent 0%, #00f0ff 25%, transparent 35%, transparent 50%, #ff5500 75%, transparent 85%, transparent 100%);
+            animation: rotar 3s linear infinite;
+        }
+
+        .energia-toroidal::after {
+            background: conic-gradient(from 180deg, transparent 0%, #ff5500 25%, transparent 35%, transparent 50%, #00f0ff 75%, transparent 85%, transparent 100%);
+            animation: rotar 5s linear infinite reverse;
+            opacity: 0.7;
+            mix-blend-mode: screen;
+        }
+
+        .energia-mask {
+            position: absolute;
+            inset: 2px;
+            background: var(--bg-dark);
+            border-radius: 50px;
+            z-index: 1;
+        }
+
+        @keyframes rotar { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+        .btn-futurista {
+            position: relative;
+            z-index: 2;
+            background: rgba(10, 15, 30, 0.5);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(0, 240, 255, 0.4);
+            border-radius: 50px;
+            padding: 22px 40px;
+            color: #ffffff;
+            font-size: 16px;
+            font-weight: 800;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            cursor: pointer;
+            box-shadow: inset 0px 0px 20px rgba(0, 240, 255, 0.1), inset 0px -4px 10px rgba(255, 85, 0, 0.1);
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            text-decoration: none;
+        }
+
+        .btn-futurista::after {
+            content: '';
+            position: absolute;
+            top: 0; left: -150%;
+            width: 50%; height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            transform: skewX(-25deg);
+            animation: destello 5s infinite;
+        }
+
+        @keyframes destello { 0% { left: -150%; } 15% { left: 200%; } 100% { left: 200%; } }
+
+        .btn-texto {
+            position: relative;
+            z-index: 3;
+            background: linear-gradient(90deg, #ffffff, #e0f0ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 0 8px rgba(255, 255, 255, 0.15);
+        }
+
+        .button-wrapper:hover .btn-futurista {
+            transform: scale(1.04) translateY(-2px);
+            border-color: rgba(255, 100, 0, 0.8);
+            background: rgba(15, 20, 40, 0.7);
+            box-shadow: inset 0px 0px 20px rgba(255, 100, 0, 0.2), inset 0px -4px 10px rgba(0, 240, 255, 0.2);
+        }
+
+        .button-wrapper:hover .energia-toroidal {
+            inset: -8px;
+            filter: blur(12px);
+            opacity: 1;
+            box-shadow: 0 0 30px rgba(0, 240, 255, 0.4), 0 0 30px rgba(255, 100, 0, 0.4);
+        }
+
+        /* Medias */
+        @media (max-width: 600px) {
+            .glass-card { padding: 30px 20px; }
+            .btn-futurista { padding: 18px 25px; font-size: 14px; }
+        }
+    </style>
+    <script>
+        // STRICT PROGRESSION GUARD
+        if (localStorage.getItem('exp90_vid3') !== 'true') {
+            window.location.replace('pagina-2.html');
+        }
+    </script>
+</head>
+<body>
+
+    <div class="container">
+        <header>
+            <h1><span class="gradient-text-blue">Evaluación</span> Estratégica</h1>
+            <p>Comprueba tu asimilación técnica</p>
+        </header>
+
+        <div class="glass-card">
+            
+            <!-- ====== STATE: INTRO ====== -->
+            <div id="state-intro" class="view-state active" style="text-align: center;">
+                <h2 style="font-size: 2.2rem; color: #fff;">Prueba de Nivel</h2>
+                <p style="color: var(--text-secondary); max-width: 500px; margin: 0 auto 40px; font-size: 1.1rem;">
+                    Se te presentarán 10 preguntas aleatorias basadas en los pilares del Código de Expansión 90. 
+                    <br><br>Necesitas un mínimo de <strong>8 respuestas correctas</strong> para aprobar y confirmar tu preparación para la siguiente etapa.
+                </p>
+                <button class="btn-standard" onclick="startQuiz()">Comenzar Evaluación</button>
+                
+                <div id="previous-record" style="display:none; margin-top: 30px; padding-top: 20px; border-top: 1px solid rgba(255,255,255,0.05);">
+                    <p style="color: #00f0ff; font-weight: 600; margin-bottom: 10px;">Ya has aprobado esta evaluación anteriormente.</p>
+                    <a href="pagina-4.html" style="color: #fff; opacity: 0.8; text-decoration: underline;">Saltar directamente a la Fase 4</a>
+                </div>
+            </div>
+
+            <!-- ====== STATE: QUIZ ====== -->
+            <div id="state-quiz" class="view-state">
+                <div class="progress-text"><span id="q-current">1</span> / 10</div>
+                <div class="progress-container">
+                    <div class="progress-bar" id="q-progress"></div>
+                </div>
+
+                <h2 class="question-text" id="q-text">Cargando pregunta...</h2>
+                
+                <div class="options-list" id="q-options">
+                    <!-- Opciones inyectadas vía JS -->
+                </div>
+
+                <div style="text-align: right; margin-top: 30px;">
+                    <button class="btn-standard" id="btn-next" onclick="nextQuestion()" disabled>Siguiente</button>
+                </div>
+            </div>
+
+            <!-- ====== STATE: RESULT ====== -->
+            <div id="state-result" class="view-state" style="text-align: center;">
+                <div id="result-wrapper">
+                    <h2 id="result-title" style="font-size: 2.5rem; margin-bottom: 30px;">Resultado</h2>
+                    <div class="score-circle" id="result-score">0/10</div>
+                    <p id="result-desc" style="font-size: 1.2rem; max-width: 500px; margin: 0 auto 30px;"></p>
+                    
+                    <div id="action-fail" style="display:none;">
+                        <button class="btn-outline" onclick="restartQuiz()">Reintentar Evaluación</button>
+                    </div>
+
+                    <div id="action-pass" style="display:none;">
+                        <p style="color: var(--blue-glow); font-weight: 800; letter-spacing: 2px; text-transform: uppercase;">Aprobado</p>
+                        
+                        <!-- BOTÓN FUTURISTA PARA CONTINUAR -->
+                        <div class="cta-container">
+                            <div class="button-wrapper">
+                                <div class="energia-toroidal"></div>
+                                <div class="energia-mask"></div>
+                                <a href="pagina-4.html" class="btn-futurista">
+                                    <span class="btn-texto">Quiero iniciar mi entrenamiento</span>
+                                </a>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <script>
+        // --- BANCO DE PREGUNTAS (Extraídos de los PDF Transcripts) ---
+        const bank = [
+            { "q": "Según el Video 1, ¿qué es necesario para abandonar la psicología del empleado?", "options": ["Un gran préstamo bancario", "Una reprogramación mental total", "Trabajar físicamente sin descanso", "Ver exclusivamente videos motivacionales"], "correct": 1 },
+            { "q": "¿Qué diferencia real hay entre la ejecución implacable y la improvisación?", "options": ["La disciplina estratégica y la creación de un sistema de trabajo", "El exceso de optimismo en las ventas", "El entusiasmo del primer día", "Tener talento comercial nato"], "correct": 0 },
+            { "q": "¿Por qué la motivación emocional por sí sola es insuficiente para triunfar?", "options": ["Porque los equipos no lo necesitan", "Porque es efímera y pasajera si no se acompaña de una estructura de negocio", "Porque consume recursos de tiempo", "Porque el mercado es muy frío"], "correct": 1 },
+            { "q": "En el caso práctico de 'Casa de Toño', ¿cuál se señala como la clave para convertir un puesto en un imperio?", "options": ["Depender de la suerte y el azar", "Reducir los precios a la mitad", "La mentalidad del líder por sistematizar el sabor, la rapidez y el servicio", "Copiar el menú de la competencia"], "correct": 2 },
+            { "q": "¿A qué se le denomina la trampa del 'llanero solitario'?", "options": ["La creencia de que 'si no lo hago yo, nadie lo hace bien', limitando tu potencial y crecimiento", "No llevar redes sociales", "Trabajar en el campo sin herramientas", "Creer que aislarte sin amigos mejora la creatividad de ventas"], "correct": 0 },
+            { "q": "El éxito empresarial se asemeja a...", "options": ["Un golpe de suerte con inversionistas", "Jugar la lotería con constancia", "Organizar una orquesta, mediante repetición de procesos de excelencia en equipo", "Acumular conocimiento y guardarlo para uno mismo"], "correct": 2 },
+            { "q": "¿Cuál es el riesgo descrito de dejarse llevar únicamente por videos motivacionales?", "options": ["Caer en el autoengaño de volar sin salas fuertes, ignorando las cifras que operan el negocio", "Mejorar demasiado rápido", "Aprender demasiada teoría técnica aburrida", "Enojarse y frustrarse con los empleados"], "correct": 0 },
+            { "q": "Para reprogramar la mente hacía el éxito se requiere principalmente:", "options": ["Leer un resumen financiero al mes", "Superar la zona de confort y abandonar la improvisación", "Renunciar a tu vida y amistades", "Una inversión inicial de millones de dólares"], "correct": 1 },
+            { "q": "¿Qué papel juega la disciplina al usar la metáfora de cocinar un platillo espectacular?", "options": ["Es la receta o ingrediente secreto que transforma la simple energía inicial en algo sostenible", "Es un adorno irrelevante", "Es el fuego que se consume rápidamente", "Es decidir improvisar para encontrar nuevos sabores"], "correct": 0 },
+            { "q": "Echar la culpa del fracaso a la falta de capital o a la economía es, en el fondo, reflejo de:", "options": ["Una inminente crisis financiera global", "Mala suerte genética", "Una pobreza mental que evita asumir la responsabilidad personal", "Fallas en el modelo universitario"], "correct": 2 },
+            { "q": "Según el Video 2, la 'obesidad mental' se describe como:", "options": ["Un estado de acumular mucha información teórica, pero con nula capacidad de ejecutar y dar resultados económicos", "Tener demasiadas grandes ideas artísticas", "Aprender descuidando la salud física", "Conocer menos herramientas de venta que el año anterior"], "correct": 0 },
+            { "q": "El 'conocimiento' se convierte en verdadero poder solamente cuando...", "options": ["Se discute con otras personas en foros", "Se le aplica acción a través de una ejecución sistemática y metódica", "Se estudia por más de cinco años", "Se memoriza completamente sin usar apuntes"], "correct": 1 },
+            { "q": "¿Qué gran lección deja la historia de Pablo (constructor de acueductos) y Bruno (cargador de cubetas)?", "options": ["Cargar cubetas es más honrado", "La abismal diferencia entre un esfuerzo bruto agotador aislado versus pensar y edificar un sistema automático", "Ambos métodos son igualmente exitosos", "La amistad es más importante que el acueducto"], "correct": 1 },
+            { "q": "¿A qué elemento se le llama 'el cáncer del éxito' en el desarrollo de negocios?", "options": ["A la falta de recursos desde el origen", "A los competidores extranjeros", "A la improvisación, porque acaba desgastando el entusiasmo sin dejar un cimiento orgánico", "A planear demasiadas cosas"], "correct": 2 },
+            { "q": "¿Cuál es la premisa esencial del cooperativismo moderno mencionado?", "options": ["Evolucionar de un modelo únicamente individual o de autoesfuerzo, a una mentalidad colaborativa", "Cobrar más por trabajar menos tiempo solo", "Tratar de desbancar a los aliados para lograr exclusividad", "Dividir las empresas en fragmentos"], "correct": 0 },
+            { "q": "¿Qué separa verdaderamente al aficionado del profesional, de acuerdo a la charla?", "options": ["El aficionado actúa dependiendo si tiene ganas, el profesional actúa según su estructura y sistema, tenga ánimos o no", "El aficionado cobra menos porcentaje", "El profesional trabaja todas las horas del reloj y no convive con nadie", "No hay diferencia, ambos usan la intuición por igual"], "correct": 0 },
+            { "q": "¿Por qué resulta dañino ser un eterno 'espectador'?", "options": ["Porque te pueden ocultar el material técnico", "Porque consumes todo pero jamás te conviertes en el arquitecto real de tu propio progreso y resultados tangibles", "Resulta sumamente aburrido y tedioso", "Aumentas tus gastos recurrentes innecesariamente"], "correct": 1 },
+            { "q": "Para derrocar la inacción y sobrepasar la mediocridad, se invita a:", "options": ["Dar el salto a la ejecución creando rutinas, hábitos fijos y modelos que permitan la repetición estratégica", "Visualizar el futuro imaginando el logro de los objetivos", "Evitar proyectar al futuro y disfrutar el hoy intensamente", "Tomar cursos internacionales costosos todos los sábados"], "correct": 0 },
+            { "q": "El valor indiscutible de cualquier información actual reside en:", "options": ["Garantizarte un estatus intelectual entre pares", "La cantidad de libros o bibliografía leída por mes", "Almacenar más datos técnicos que los competidores y defenderlos", "Ser capaz de aterrizarla, transformarla en acción estructurada repetible"], "correct": 3 },
+            { "q": "Comportarse como un 'arquitecto de la excelencia', requiere en primer lugar:", "options": ["Diseñar esquemas piramidales teóricos", "Cesanear el consumo de datos al azar y construir activamente rutinas de entrenamiento y operación de élite", "Poseer un amplio portafolio de conexiones bancarias", "Preservar y atesorar las ganancias inmediatas en cuentas personales"], "correct": 1 },
+            { "q": "En el Video 3, la nueva arquitectura de negocio estratégica tecnológica se apoya en tres fuertes pilares:", "options": ["Inversión Inmobiliaria, Cripto y Forex", "La destreza nata, el exceso de energía y el optimismo arrollador", "Telefonía social con automatización (IA) y un ecosistema de comunidad estructurada cooperativa", "Campañas masivas de venta y delegación financiera pasiva"], "correct": 2 },
+            { "q": "El talento puro que no está amparado bajo un sistema y proceso, en los rubros profesionales se asume como:", "options": ["Un ticket automático hacia la riqueza masiva", "Solo un hobby personal o entretenimiento técnico temporal", "La herramienta más potente que puede poseer un empresario nuevo", "El mejor seguro de vida operativo"], "correct": 1 },
+            { "q": "Operar un proyecto y tomar determinaciones diarias improvisando, es equiparable a:", "options": ["Tener un alma muy creativa e innovadora aplaudible", "Aventurarse a fabricar un inestable castillo de naipes insostenible a mediano o largo plazo", "Implementar un formato disruptivo del que casi nadie sabe operar aún", "Ejecutar un experimento psicológico inofensivo"], "correct": 1 },
+            { "q": "Al trabajar bajo un sólido formato de cooperativismo (colaborar en red) el efecto financiero directo suele ser:", "options": ["División innecesaria e injusta de las minúsculas ganancias retenidas", "Experimentar un crecimiento multiplicador y exponencial donde la victoria de uno nutre a los anexos", "Una clara disminución de responsabilidades operativas e ingresos", "Mayor inversión bruta en activos contables en servidores tecnológicos"], "correct": 1 },
+            { "q": "¿Qué factor crítico es el que marca pauta al realizar la inversión educativa del compromiso sugerido?", "options": ["Suplir la lectura tradicional asumiendo el contenido en formato audiovisual exclusivamente", "Adquirir un mero ticket para consumir información ajena sentándose al final del aula", "Transformar radicalmente la mente pasando de consumidor de datos perdidos a creador metódico impulsado por el propósito y obligación moral", "Verificar sin riesgo y a la distancia qué información de tendencia se trata en el mercado"], "correct": 2 },
+            { "q": "Existen personas increíblemente apasionadas que fracasan duramente en su vida profesional, típicamente esto se debe a:", "options": ["La fuerte recesión financiera de las regiones que habitan", "Poseer una contundente ausencia de dirección procesable, carencia de estructura y nula táctica enfocada en cerrar cifras", "Ser afectados directamente por el rápido cansancio crónico frente al estrés diario inevitable", "Haber escogido equivocadamente una industria digital frente a modelos comerciales netamente tradicionales"], "correct": 1 },
+            { "q": "Un emprendedor estratégico moderno convierte e independiza su principal dispositivo móvil dejándolo de ver como una terminal de ocio puro, para erigirlo como:", "options": ["Un dispositivo social orientado hacia el gaming o creación de videos casuales diarios de marca abstracta", "Su principal consola de streaming individual sin valor táctico", "Una sofisticadísima y agresiva herramienta de sistematización, inteligencia artificial real y centro de operaciones controlables", "Un instrumento contable temporal básico que luego es obsoleto"], "correct": 2 },
+            { "q": "A fin de cuentas, la revolucionaria Inteligencia Artificial únicamente detona resultados en negocios formales cuando...", "options": ["Genera memes geniales virales que la marca sube sin criterio al timeline principal corporativo", "Se enfoca en amenazar de muerte y sustitución despiadada a todo el ecosistema de trabajadores directos operativos", "Se le condiciona activamente bajo el servicio dictatorial de una genuina automatización real y estrategia clara corporativa", "Nos enteramos que es una tecnología plenamente global, gratuita y para consumo lúdico esporádico público"], "correct": 2 },
+            { "q": "El imperativo de elevar drásticamente tus estándares exigibles de vida amerita forzosamente:", "options": ["Gozar primeramente de un tiempo de gracia, aguardando impaciente que el mercado gire y se acople fortuitamente a favor propio en algunos años", "Obligarte al límite a transformar de inmediato tu entorno asumiendo posiciones de colaboración neta y entrenándote diariamente rehusándote a pactar con la mediocridad", "Un nivel de talento intelectual congénito extremadamente alto de corte privilegiado ajeno", "La inevitable compresión drástica y severa reducción de todas las aspiraciones humanas que se conciben lógicas ante un caos macroeconómico inevitable"], "correct": 1 },
+            { "q": "Descartada la improvisación, el propósito definitorio exacto para adentrar a un afiliado en este código de 90 es:", "options": ["Transformarlo de un efímero y soñador romántico a un feroz arquitecto sistémico, inserto en un bucle mutuo colectivo solidario que devora a la competencia", "Animarlo a empaquetar cursos digitales motivacionales genéricos para revender a contactos periféricos cálidos en redes de mercadeo dudosas y banales no lucrativas directamente", "Concederle un fugaz reconocimiento vanidoso y efímero social web", "Facilitarle de golpe un empleo en oficinas tradicionales directivas amansando por siempre su genuina necesidad creativa innata bajo techo condicionado inquebrantable eternamente"], "correct": 0 }
+        ];
+
+        // --- LÓGICA DE APLICACIÓN ---
+        let questions = [];
+        let currentIndex = 0;
+        let score = 0;
+        let selectedOption = null;
+
+        // Mezclar array y tomar N elementos
+        function shuffleQuestions(array, n) {
+            let shuffled = [...array].sort(() => 0.5 - Math.random());
+            return shuffled.slice(0, n);
+        }
+
+        // Iniciar Quiz
+        function startQuiz() {
+            questions = shuffleQuestions(bank, 10);
+            currentIndex = 0;
+            score = 0;
+            
+            document.getElementById('state-intro').classList.remove('active');
+            document.getElementById('state-quiz').classList.add('active');
+            
+            loadQuestion();
+        }
+
+        // Cargar Pregunta Actual
+        function loadQuestion() {
+            const q = questions[currentIndex];
+            selectedOption = null;
+            document.getElementById('btn-next').disabled = true;
+
+            // UI Progress
+            document.getElementById('q-current').innerText = currentIndex + 1;
+            document.getElementById('q-progress').style.width = `${((currentIndex) / 10) * 100}%`;
+
+            // Setup Text
+            document.getElementById('q-text').innerText = q.q;
+            
+            // Setup Options
+            const optsContainer = document.getElementById('q-options');
+            optsContainer.innerHTML = '';
+            
+            q.options.forEach((optText, index) => {
+                let btn = document.createElement('button');
+                btn.className = 'option-btn';
+                btn.innerText = optText;
+                btn.onclick = () => selectOption(index, btn);
+                optsContainer.appendChild(btn);
+            });
+        }
+
+        // Selección de Respuesta
+        function selectOption(index, btnElem) {
+            selectedOption = index;
+            document.getElementById('btn-next').disabled = false;
+            
+            // Remove selection class from all
+            let btns = document.getElementById('q-options').getElementsByTagName('button');
+            for(let b of btns) { b.classList.remove('selected'); }
+            
+            // Add to target
+            btnElem.classList.add('selected');
+        }
+
+        // Siguiente
+        function nextQuestion() {
+            // Check answer
+            if(selectedOption === questions[currentIndex].correct) {
+                score++;
+            }
+
+            currentIndex++;
+            
+            if(currentIndex >= questions.length) {
+                document.getElementById('q-progress').style.width = `100%`;
+                setTimeout(showResults, 300);
+            } else {
+                loadQuestion();
+            }
+        }
+
+        // Finales
+        function showResults() {
+            document.getElementById('state-quiz').classList.remove('active');
+            document.getElementById('state-result').classList.add('active');
+            
+            document.getElementById('result-score').innerText = `${score}/10`;
+            let resultWrapper = document.getElementById('result-wrapper');
+
+            // Set LocalStorage
+            let attempts = parseInt(localStorage.getItem('exp90_eval_attempts') || '0') + 1;
+            localStorage.setItem('exp90_eval_attempts', attempts);
+            localStorage.setItem('exp90_eval_score', score);
+            
+            let passed = score >= 8;
+            localStorage.setItem('exp90_eval_passed', passed);
+
+            if(passed) {
+                resultWrapper.className = 'score-pass';
+                document.getElementById('result-desc').innerText = "¡Excelente nivel de asimilación! Estás listo para dejar atrás la mediocridad y convertir el conocimiento en poder.";
+                document.getElementById('action-pass').style.display = 'block';
+                document.getElementById('action-fail').style.display = 'none';
+            } else {
+                resultWrapper.className = 'score-fail';
+                document.getElementById('result-desc').innerText = "Tu asimilación necesita ser reforzada. Revisa de nuevo los conceptos de estrategia y operativa e inténtalo otra vez.";
+                document.getElementById('action-fail').style.display = 'block';
+                document.getElementById('action-pass').style.display = 'none';
+            }
+        }
+
+        function restartQuiz() {
+            document.getElementById('state-result').classList.remove('active');
+            startQuiz();
+        }
+
+        // Verificar histórico al cargar página
+        window.addEventListener('DOMContentLoaded', () => {
+            let wasPassed = localStorage.getItem('exp90_eval_passed') === 'true';
+            if(wasPassed) {
+                document.getElementById('previous-record').style.display = 'block';
+            }
+        });
+    </script>
+</body>
+</html>
